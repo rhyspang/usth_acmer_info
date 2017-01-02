@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>ECharts</title>
+    <script src="/static/js/echarts.min.js"></script>
+    <script src="/static/js/jquery-3.1.1.min.js"></script>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css" type="text/css" />
+
+</head>
+
+<body>
+<!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+<div class="container-fluid"><div id="main" style="width: 100%;height:1800px;"></div></div>
+
+<script type="text/javascript">
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('main'));
+
+    // 指定图表的配置项和数据
+    option = {
+        title: {
+            text: 'USTH ACMer task info',
+            subtext: '数据来自acm.hdu.edu.cn'
+        },
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'shadow'
+            }
+        },
+        legend: {
+            data: ['submissions', 'solved'],
+            orient: "vertical",
+            x: "right"
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        xAxis: {
+            type: 'value',
+            boundaryGap: [0, 0.01]
+        },
+        yAxis: {
+            type: 'category',
+            data: []
+        },
+        series: [{
+            name: 'solved',
+            type: 'bar',
+            data: []
+        },{
+            name: 'submissions',
+            type: 'bar',
+            data: []
+        } ]
+    };
+
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+
+
+    $.getJSON("http://10.8.5.13/data/", function(json){
+
+        var name = []
+        var submissions = []
+        var problems_solved = []
+
+        for (var i = 0; i < json.length; i++) {
+            name.push(json[i].user_name);
+            submissions.push(json[i].submissions);
+            problems_solved.push(json[i].problems_solved);
+        }
+
+
+        myChart.setOption({
+            yAxis: {
+                type: 'category',
+                data: name,
+            },
+            series: [{
+                name: 'submissions',
+                type: 'bar',
+                data: submissions,
+            }, {
+                name: 'solved',
+                type: 'bar',
+                data: problems_solved,
+            }]
+        });
+
+    });
+
+
+
+
+</script>
+</body>
+
+</html>
